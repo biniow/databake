@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-def main():
+class InvalidPinTypeError(Exception):
     pass
 
-
-if __name__ == '__main__':
-    main()
