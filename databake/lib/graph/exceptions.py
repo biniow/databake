@@ -5,3 +5,6 @@
 class InvalidPinTypeError(Exception):
     pass
 
+
+class NodeError(Exception):
+    pass
