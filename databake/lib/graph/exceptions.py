@@ -8,3 +8,7 @@ class InvalidPinTypeError(Exception):
 
 class NodeError(Exception):
     pass
+
+
+class PinConnectionError(Exception):
+    pass
