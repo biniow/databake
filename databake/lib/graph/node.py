@@ -24,14 +24,21 @@ class Node:
             self.import_config_from_plugin()
 
     def __str__(self):
-        return f'Node:{self.name}({self.node_id})'
+        return f'Node:{self.name}(id:{self.node_id})'
 
-    def add_pin(self, pin):
+    def validate_pin(self, pin):
         if not isinstance(pin, Pin):
             raise TypeError(f'{type(pin)} is not supported')
 
         if pin in self.input_pins + self.output_pins:
             raise NodeError(f'{pin} is already associated with {self}')
+
+        for existing_pin in self.input_pins + self.output_pins:
+            if existing_pin.name == pin.name:
+                raise NodeError(f'Already exists in node pin with "{pin.name}" name')
+
+    def add_pin(self, pin):
+        self.validate_pin(pin)
 
         if pin.type == INPUT_PIN:
             self.input_pins.append(pin)
@@ -47,6 +54,12 @@ class Node:
                 break
         else:
             raise NodeError(f'{pin} does not exists in {self}')
+
+    def get_pin_by_name(self, pin_name):
+        for pin in self.input_pins + self.output_pins:
+            if pin.name == pin_name:
+                return pin
+        raise NodeError(f'Pin with name: {pin_name} doesn\'t exists in {self}')
 
     def import_config_from_plugin(self):
         self.plugin = importlib.import_module(self.plugin_name)

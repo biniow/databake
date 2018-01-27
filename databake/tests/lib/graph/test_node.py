@@ -12,7 +12,7 @@ from databake.lib.graph.pin import INPUT_PIN, OUTPUT_PIN, Pin
 class TestNode(TestCase):
     def setUp(self):
         self.node_id = '1'
-        self.plugin = 'databake.tests.plugins.join_test'
+        self.plugin_name = 'databake.tests.plugins_mocks.join_test'
         self.name = 'ExampleName'
 
         self.plugin1_mock = mock.MagicMock(
@@ -30,21 +30,47 @@ class TestNode(TestCase):
     def test_node_createEmptyObject_objectProperlyCreated(self):
         # Arrange
         # Act
-        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
 
         # Assert
         self.assertIsInstance(node, Node)
         self.assertEqual(self.node_id, node.node_id)
-        self.assertEqual(self.plugin, node.plugin_name)
+        self.assertEqual(self.plugin_name, node.plugin_name)
         self.assertEqual(self.name, node.name)
         self.assertEqual(0, node.level)
         self.assertEqual([], node.input_pins)
         self.assertEqual([], node.output_pins)
         self.assertEqual({}, node.parameters)
 
+    def test_validatePin_pinIsNotPinType_raiseTypeError(self):
+        # Arrange
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
+
+        # Assert
+        self.assertRaises(TypeError, node.add_pin, 5)
+
+    def test_validatePin_addDuplicatedPin_raiseNodeError(self):
+        # Arrange
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
+        pin = Pin('pin1', INPUT_PIN)
+        node.add_pin(pin)
+
+        # Act / Assert
+        self.assertRaises(NodeError, node.add_pin, pin)
+
+    def test_validatePin_pinWithDuplicatedNameInNode_raiseNodeError(self):
+        # Arrange
+        node = Node(self.node_id, self.plugin_name, self.name)
+        pin1 = Pin('pin1', INPUT_PIN)
+        pin_duplicated_name = Pin('pin1', OUTPUT_PIN)
+        node.add_pin(pin1)
+
+        # Act / Assert
+        self.assertRaises(NodeError, node.add_pin, pin_duplicated_name)
+
     def test_addPin_addNewValidPin_pinCorrectlyAdded(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
         pin = Pin('pin1', INPUT_PIN)
 
         # Act
@@ -56,20 +82,23 @@ class TestNode(TestCase):
 
     def test_addPin_addDuplicatedPin_noChangeInNode(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
         pin = Pin('pin1', INPUT_PIN)
 
         # Act
-        node.add_pin(pin)
+        try:
+            node.add_pin(pin)
+            node.add_pin(pin)
+        except NodeError as e:
+            print(e)
 
         # Assert
-        self.assertRaises(NodeError, node.add_pin, pin)
         self.assertEqual(len(node.input_pins), 1)
         self.assertEqual(len(node.output_pins), 0)
 
-    def test_addPin_addMultipleOutputPins_correctlyAdded(self):
+    def test_addPin_addMultipleInputAndOutputPins_correctlyAdded(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
 
         # Act
         node.add_pin(Pin('pin1', INPUT_PIN))
@@ -81,16 +110,23 @@ class TestNode(TestCase):
         self.assertEqual(len(node.input_pins), 2)
         self.assertEqual(len(node.output_pins), 2)
 
-    def test_addPin_pinIsNotPinType_raiseTypeError(self):
+    def test_addPin_pinWithDuplicatedName_noChangeInNode(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name)
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
+        pin1 = Pin('pin1', INPUT_PIN)
+        pin_duplicated_name = Pin('pin1', OUTPUT_PIN)
+        try:
+            node.add_pin(pin1)
+        except PinError as e:
+            print(e)
 
-        # Assert
-        self.assertRaises(TypeError, node.add_pin, 5)
+        # Act / Assert
+        self.assertEqual(len(node.input_pins), 1)
+        self.assertEqual(len(node.output_pins), 0)
 
     def test_removePin_removeExistingPin_correctlyRemoved(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
         pin = Pin('pin1', INPUT_PIN)
 
         # Act
@@ -102,7 +138,7 @@ class TestNode(TestCase):
 
     def test_removePin_removeNotExistingPin_PinNotInNodeErrorRaised(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name)
+        node = Node(self.node_id, self.plugin_name, self.name)
         pin = Pin('pin1', INPUT_PIN)
 
         # Act / Assert
@@ -121,4 +157,23 @@ class TestNode(TestCase):
         self.assertEqual(len(node.input_pins), 2)
         self.assertEqual(len(node.output_pins), 1)
 
+    def test_getPinByName_pinExistsInNode_pinReturned(self):
+        # Arrange
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
+        pin_name = 'very_unique_pin_name'
+        pin = Pin(pin_name, INPUT_PIN)
+        node.add_pin(pin)
 
+        # Act
+        returned_value = node.get_pin_by_name(pin_name)
+
+        # Assert
+        self.assertEqual(pin, returned_value)
+
+    def test_getPinByName_pinDoesNotExistInNode_raiseNodeError(self):
+        # Arrange
+        node = Node(self.node_id, self.plugin_name, self.name, auto_import=False)
+        pin_name = 'very_unique_pin_name'
+
+        # Act / Assert
+        self.assertRaises(NodeError, node.get_pin_by_name, pin_name)

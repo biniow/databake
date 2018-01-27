@@ -3,6 +3,7 @@
 from unittest import TestCase
 
 from databake.lib.graph.exceptions import InvalidPinTypeError
+from databake.lib.graph.node import Node
 from databake.lib.graph.pin import Pin, INPUT_PIN, OUTPUT_PIN
 
 
@@ -47,4 +48,3 @@ class TestPin(TestCase):
 
         # Assert
         self.assertFalse(result)
-
