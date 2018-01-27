@@ -17,7 +17,7 @@ class Graph:
             if self.nodes.get(node.id):
                 msg = 'Graph can not contain two or more nodes with the same id'
                 raise GraphError(msg)
-            self.nodes[node.id] = Node(node.id, node.plugin, node.name)
+            self.nodes[node.id] = Node(node.id, node.plugin_name, node.name)
 
         for connection in recipe.connections:
             from_pin = Pin(connection.from_pin.name, OUTPUT_PIN)

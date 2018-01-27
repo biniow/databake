@@ -12,7 +12,7 @@ from databake.lib.graph.pin import INPUT_PIN, OUTPUT_PIN, Pin
 class TestNode(TestCase):
     def setUp(self):
         self.node_id = '1'
-        self.plugin = 'core.example.plugin'
+        self.plugin = 'databake.tests.plugins.join_test'
         self.name = 'ExampleName'
 
         self.plugin1_mock = mock.MagicMock(
@@ -25,12 +25,12 @@ class TestNode(TestCase):
             __parameters__={
                 'join_type': str
             }
-    )
+        )
 
     def test_node_createEmptyObject_objectProperlyCreated(self):
         # Arrange
         # Act
-        node = Node(self.node_id, self.plugin, self.name)
+        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
 
         # Assert
         self.assertIsInstance(node, Node)
@@ -44,7 +44,7 @@ class TestNode(TestCase):
 
     def test_addPin_addNewValidPin_pinCorrectlyAdded(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name)
+        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
         pin = Pin('pin1', INPUT_PIN)
 
         # Act
@@ -56,7 +56,7 @@ class TestNode(TestCase):
 
     def test_addPin_addDuplicatedPin_noChangeInNode(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name)
+        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
         pin = Pin('pin1', INPUT_PIN)
 
         # Act
@@ -69,7 +69,7 @@ class TestNode(TestCase):
 
     def test_addPin_addMultipleOutputPins_correctlyAdded(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name)
+        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
 
         # Act
         node.add_pin(Pin('pin1', INPUT_PIN))
@@ -90,7 +90,7 @@ class TestNode(TestCase):
 
     def test_removePin_removeExistingPin_correctlyRemoved(self):
         # Arrange
-        node = Node(self.node_id, self.plugin, self.name)
+        node = Node(self.node_id, self.plugin, self.name, auto_import=False)
         pin = Pin('pin1', INPUT_PIN)
 
         # Act
@@ -112,7 +112,7 @@ class TestNode(TestCase):
     def test_importConfigFromPlugin_normalExecution_validNumberOfPinsAssociated(self, importlib):
         # Arrange
         importlib.return_value = self.plugin1_mock
-        node = Node(1, 'plugin_name', 'Node')
+        node = Node(1, 'plugin_name', 'Node', auto_import=False)
 
         # Act
         node.import_config_from_plugin()

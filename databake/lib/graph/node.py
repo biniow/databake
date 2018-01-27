@@ -6,10 +6,11 @@ from databake.lib.graph.pin import INPUT_PIN, OUTPUT_PIN, Pin
 
 
 class Node:
-    def __init__(self, node_id, plugin_name, name='Node', parameters=None, auto_import=False):
+    def __init__(self, node_id, plugin_name, name='Node', parameters=None, auto_import=True):
         self.node_id = node_id
         self.name = name
         self.plugin_name = plugin_name
+        self.plugin = None
         self.level = 0
 
         self.input_pins = []
@@ -48,11 +49,11 @@ class Node:
             raise NodeError(f'{pin} does not exists in {self}')
 
     def import_config_from_plugin(self):
-        plugin = importlib.import_module(self.plugin_name)
-        self._iterate_plugin_pins(plugin.__input_pins__, INPUT_PIN)
-        self._iterate_plugin_pins(plugin.__output_pins__, OUTPUT_PIN)
+        self.plugin = importlib.import_module(self.plugin_name)
+        self._iterate_plugin_pins(self.plugin.__input_pins__, INPUT_PIN)
+        self._iterate_plugin_pins(self.plugin.__output_pins__, OUTPUT_PIN)
 
-        for param_name, param_type in plugin.__parameters__.items():
+        for param_name, param_type in self.plugin.__parameters__.items():
             valid_types = (param_type, type(None))
             if not isinstance(self.parameters.get(param_name), valid_types):
                 raise NodeError(f'Invalid type of {param_name} parameter. Should be {param_type}')

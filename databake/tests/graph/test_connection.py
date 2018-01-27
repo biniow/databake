@@ -10,9 +10,9 @@ from databake.lib.graph.pin import INPUT_PIN, Pin, OUTPUT_PIN
 
 class TestConnection(TestCase):
     def setUp(self):
-        self.node1 = Node(1, 'test', 'Node1')
+        self.node1 = Node(1, 'test', 'Node1', auto_import=False)
         self.node1.level = 0
-        self.node2 = Node(2, 'test', 'Node2')
+        self.node2 = Node(2, 'test', 'Node2', auto_import=False)
         self.node2.level = 1
 
         self.pin1 = Pin('pin1', OUTPUT_PIN)
@@ -50,7 +50,7 @@ class TestConnection(TestCase):
 
     def test_connection_correctlyAddedTheSameLevel_destinationNodeLevelIncreased(self):
         # Arrange
-        node_zero = Node(3, 'tets', 'node_zero')
+        node_zero = Node(3, 'tets', 'node_zero', auto_import=False)
         node_zero.level = 0
         pin = Pin('pin', INPUT_PIN)
         pin.node = node_zero

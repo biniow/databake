@@ -14,13 +14,15 @@ class TestGraph(TestCase):
     def setUp(self):
         self.node1 = mock.MagicMock()
         self.node1.id = 1
-        self.node1.plugin = 'plugins.core.join'
+        self.node1.plugin_name = 'databake.tests.plugins.join_test'
         self.node1.name = 'join_first'
+        self.node1.import_config_from_plugin = mock.MagicMock()
 
         self.node2 = mock.MagicMock()
         self.node2.id = 2
-        self.node2.plugin = 'plugins.core.where'
+        self.node2.plugin_name = 'databake.tests.plugins.where_test'
         self.node2.name = 'filtering results'
+        self.node2.import_config_from_plugin = mock.MagicMock()
 
         self.connection1 = mock.MagicMock()
         self.connection1.name = 'node1 to node2'
