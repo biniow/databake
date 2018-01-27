@@ -3,7 +3,6 @@
 from databake.lib.graph.connection import Connection
 from databake.lib.graph.exceptions import GraphError
 from databake.lib.graph.node import Node
-from databake.lib.graph.pin import Pin, OUTPUT_PIN, INPUT_PIN
 
 
 class Graph:
@@ -22,7 +21,7 @@ class Graph:
             if self.nodes.get(node.id):
                 msg = 'Graph can not contain two or more nodes with the same id'
                 raise GraphError(msg)
-            self.nodes[node.id] = Node(node.id, node.plugin_name, node.name)
+            self.nodes[node.id] = Node(node.id, node.plugin_name, node.name, node.parameters)
 
     def init_connections(self):
         for connection in self.recipe.connections:

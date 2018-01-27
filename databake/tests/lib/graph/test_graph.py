@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import importlib
 from unittest import TestCase
+
 import mock
 
 from databake.lib.graph.connection import Connection
@@ -16,12 +17,14 @@ class TestGraph(TestCase):
         self.node1.id = 1
         self.node1.plugin_name = 'databake.tests.plugins_mocks.join_test'
         self.node1.name = 'join_first'
+        self.node1.parameters = {'join_type': 'left'}
         self.node1.import_config_from_plugin = mock.MagicMock()
 
         self.node2 = mock.MagicMock()
         self.node2.id = 2
         self.node2.plugin_name = 'databake.tests.plugins_mocks.where_test'
         self.node2.name = 'filtering results'
+        self.node2.parameters = {'condition': 'a > 10'}
         self.node2.import_config_from_plugin = mock.MagicMock()
 
         self.connection1 = mock.MagicMock()
@@ -138,6 +141,7 @@ class TestGraph(TestCase):
         node.id = 3
         node.plugin_name = 'databake.tests.plugins_mocks.join_test'
         node.name = 'join_first'
+        node.parameters = {'join_type': 'left'}
         node.import_config_from_plugin = mock.MagicMock()
 
         recipe = mock.MagicMock()
