@@ -11,9 +11,9 @@ from databake.lib.graph.pin import INPUT_PIN, Pin, OUTPUT_PIN
 class TestConnection(TestCase):
     def setUp(self):
         self.node1 = Node(1, 'test', 'Node1')
-        self.node1.level = 1
+        self.node1.level = 0
         self.node2 = Node(2, 'test', 'Node2')
-        self.node2.level = 2
+        self.node2.level = 1
 
         self.pin1 = Pin('pin1', OUTPUT_PIN)
         self.pin1.node = self.node1
@@ -47,3 +47,16 @@ class TestConnection(TestCase):
 
         # Connection from node with higher or equal level means circular reference
         self.assertRaises(PinConnectionError, Connection, self.pin2, self.pin3)
+
+    def test_connection_correctlyAddedTheSameLevel_destinationNodeLevelIncreased(self):
+        # Arrange
+        node_zero = Node(3, 'tets', 'node_zero')
+        node_zero.level = 0
+        pin = Pin('pin', INPUT_PIN)
+        pin.node = node_zero
+
+        # Act
+        connection = Connection(self.pin1, pin)
+
+        # Assert
+        self.assertEqual(node_zero.level, 1)

@@ -13,6 +13,9 @@ class Connection:
         self.to_pin = to_pin
         self.comment = comment
 
+        if from_pin.node.level == to_pin.node.level:
+            to_pin.node.level += 1
+
     @staticmethod
     def validate_connection(from_pin, to_pin):
         msg = None
@@ -30,4 +33,4 @@ class Connection:
 
     @staticmethod
     def _is_circular_reference(from_pin, to_pin):
-        return from_pin.node.level >= to_pin.node.level
+        return from_pin.node.level > to_pin.node.level

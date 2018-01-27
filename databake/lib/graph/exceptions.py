@@ -12,3 +12,7 @@ class NodeError(Exception):
 
 class PinConnectionError(Exception):
     pass
+
+
+class GraphError(Exception):
+    pass
