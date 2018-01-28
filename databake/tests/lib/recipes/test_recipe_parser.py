@@ -40,19 +40,7 @@ class TestRecipeParser(TestCase):
             'graph': {
                 'name': 'test',
                 'nodes': [],
-                'connections': [
-                    {
-                        'name': 'siema',
-                        'from_pin': {
-                            'node': 1,
-                            'pin': 'output'
-                        },
-                        'to_pin': {
-                            'node': 1,
-                            'pin': 'output'
-                        }
-                    }
-                ]
+                'connections': []
             }
         }
 
