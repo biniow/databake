@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import xml
-from xml.etree.ElementTree import tostring
 
 from databake.lib.recipes.exceptions import ParserError
 from databake.lib.recipes.recipe import Recipe
@@ -13,7 +12,7 @@ class XmlRecipeParser(RecipeParser):
         super().__init__(recipe_path)
 
     def parse(self, raw_data=False):
-        etree = xml.etree.ElementTree.parse()
+        etree = xml.etree.ElementTree.parse(self.recipe_path)
         data_dict = self._etree_to_dict(etree)
         if raw_data:
             return data_dict

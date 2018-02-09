@@ -67,7 +67,7 @@ class TestXmlRecipeParser(TestCase):
                     }
                 ]
             }
-            }
+        }
 
     @mock.patch('databake.lib.recipes.recipe_parser.RecipeParser.__init__')
     def test_xmlRecipeParser_normalCreation_superCalledOnce(self, init_mock):
@@ -81,6 +81,7 @@ class TestXmlRecipeParser(TestCase):
     def test_parse_normalExecution_returnParsedRecipe(self, init_mock, parse_mock):
         # Arrange
         xml_parser = XmlRecipeParser('dummy/path')
+        xml_parser.recipe_path = 'dummy/path'
         parse_mock.return_value = fromstring(self.example_data)
 
         # Act
@@ -94,6 +95,7 @@ class TestXmlRecipeParser(TestCase):
     def test_parse_getRawData_returnedValidData(self, init_mock, parse_mock):
         # Arrange
         xml_parser = XmlRecipeParser('dummy/path')
+        xml_parser.recipe_path = 'dummy/path'
         parse_mock.return_value = fromstring(self.example_data)
 
         # Act
