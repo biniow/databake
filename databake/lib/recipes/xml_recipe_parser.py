@@ -3,6 +3,7 @@
 import xml
 from xml.etree.ElementTree import tostring
 
+from databake.lib.recipes.exceptions import ParserError
 from databake.lib.recipes.recipe import Recipe
 from databake.lib.recipes.recipe_parser import RecipeParser
 
@@ -11,41 +12,58 @@ class XmlRecipeParser(RecipeParser):
     def __init__(self, recipe_path):
         super().__init__(recipe_path)
 
-    def parse(self):
+    def parse(self, raw_data=False):
         etree = xml.etree.ElementTree.parse()
-        raw_data = self._etree_to_dict(etree)
-        return Recipe(raw_data)
+        data_dict = self._etree_to_dict(etree)
+        if raw_data:
+            return data_dict
+        return Recipe(data_dict)
 
     def _etree_to_dict(self, etree):
-        name = etree.findall('name')[0].text
-        nodes = []
-        connections = []
-        parameters = {}
-
-        for tag in etree.findall('nodes')[0]:
-            node = {}
-            for child in tag:
-                parameter = {}
-                for parameter_data in child:
-                    parameter[parameter_data.tag] = parameter_data.text
-                node[child.tag] = child.text if child.text is not None else parameter
-            nodes.append(node)
-
-        for tag in etree.findall('connections')[0]:
-            connection = {}
-            for child in tag:
-                pin = {}
-                for pin_data in child:
-                    pin[pin_data.tag] = pin_data.text
-                connection[child.tag] = child.text if child.text is not None else pin
-            connections.append(connection)
-
-        for tag in etree.findall('parameters'):
-            for child in tag:
-                parameters[child.tag] = child.text
+        name = etree.get('name')
+        nodes_xml = etree.findall('node')
+        connections_xml = etree.findall('connection')
 
         return {'graph': {
             'name': name,
-            'nodes': nodes,
-            'connections': connections
+            'nodes': self._parse_nodes(nodes_xml),
+            'connections': self._parse_connections(connections_xml)
         }}
+
+    def _parse_nodes(self, nodes):
+        result = []
+        for node in nodes:
+            parameters = {}
+
+            for param in node.findall('param'):
+                parameters[param.get('name')] = param.get('value')
+
+            result.append({
+                'name': node.get('name'),
+                'id': node.get('id'),
+                'plugin_name': node.get('plugin_name'),
+                'parameters': parameters
+            })
+        return result
+
+    def _parse_connections(self, connections):
+        result = []
+        for connection in connections:
+            from_pin = connection.findall('from_pin')
+            to_pin = connection.findall('to_pin')
+
+            if len(from_pin) != 1 or len(to_pin) != 1:
+                raise ParserError(f'{connection} has invalid structure')
+
+            result.append({
+                'name': connection.get('name'),
+                'from_pin': {
+                    'node': from_pin[0].get('node'),
+                    'pin': from_pin[0].get('pin')
+                },
+                'to_pin': {
+                    'node': to_pin[0].get('node'),
+                    'pin': to_pin[0].get('pin')
+                }
+            })
+        return result

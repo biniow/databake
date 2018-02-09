@@ -35,7 +35,3 @@ class Graph:
             tmp = Connection(from_pin, to_pin, connection.name)
             self.connections.append(tmp)
 
-
-
-
-
