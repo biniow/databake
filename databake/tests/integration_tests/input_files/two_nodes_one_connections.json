@@ -1,0 +1,38 @@
+{
+  "graph": {
+    "name": "name of graph",
+    "nodes": [
+      {
+        "name": "node1",
+        "id": "1",
+        "plugin_name": "databake.tests.plugins_mocks.join_test",
+        "parameters": {
+          "name": "join_type",
+          "value": "left"
+        }
+      },
+      {
+        "name": "node2",
+        "id": "2",
+        "plugin_name": "databake.tests.plugins_mocks.where_test",
+        "parameters": {
+          "name": "condition",
+          "value": "'id' > 5"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "name": "connection1",
+        "from_pin": {
+          "node": "1",
+          "pin": "output"
+        },
+        "to_pin": {
+          "node": "2",
+          "pin": "input"
+        }
+      }
+    ]
+  }
+}

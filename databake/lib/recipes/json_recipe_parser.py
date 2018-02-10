@@ -13,6 +13,8 @@ class JsonRecipeParser(RecipeParser):
     def parse(self, raw_data=False):
         with open(self.recipe_path) as json_file:
             data_dict = json.loads(json_file.read())
+
         if raw_data:
             return data_dict
         return Recipe(data_dict)
+

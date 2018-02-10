@@ -8,7 +8,7 @@ from databake.lib.graph.node import Node
 class Graph:
     def __init__(self, recipe, auto_init=True):
         self.recipe = recipe
-        self.name = recipe.name
+        self.name = recipe.graph_name
         self.nodes = {}
         self.connections = []
 
@@ -26,8 +26,8 @@ class Graph:
     def init_connections(self):
         for connection in self.recipe.connections:
             try:
-                from_pin = self.nodes[connection.from_pin.node].get_pin_by_name(connection.from_pin.name)
-                to_pin = self.nodes[connection.to_pin.node].get_pin_by_name(connection.to_pin.name)
+                from_pin = self.nodes[connection.from_pin.node].get_pin_by_name(connection.from_pin.pin)
+                to_pin = self.nodes[connection.to_pin.node].get_pin_by_name(connection.to_pin.pin)
             except KeyError:
                 if not self.nodes:
                     raise GraphError('Nodes list is empty. Have you initialized nodes?')

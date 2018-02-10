@@ -82,25 +82,10 @@ class TestXmlRecipeParser(TestCase):
         # Arrange
         xml_parser = XmlRecipeParser('dummy/path')
         xml_parser.recipe_path = 'dummy/path'
-        parse_mock.return_value = fromstring(self.example_data)
+        parse_mock.get_root = fromstring(self.example_data)
 
         # Act
         returned_value = xml_parser.parse()
 
         # Assert
         self.assertIsInstance(returned_value, Recipe)
-
-    @mock.patch('xml.etree.ElementTree.parse')
-    @mock.patch('databake.lib.recipes.recipe_parser.RecipeParser.__init__')
-    def test_parse_getRawData_returnedValidData(self, init_mock, parse_mock):
-        # Arrange
-        xml_parser = XmlRecipeParser('dummy/path')
-        xml_parser.recipe_path = 'dummy/path'
-        parse_mock.return_value = fromstring(self.example_data)
-
-        # Act
-        returned_value = xml_parser.parse(raw_data=True)
-
-        # Assert
-        self.maxDiff = None
-        self.assertDictEqual(self.parsed_dict_example, returned_value)

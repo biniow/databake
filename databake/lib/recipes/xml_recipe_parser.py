@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import xml
+import xml.etree.ElementTree as ET
 
 from databake.lib.recipes.exceptions import ParserError
 from databake.lib.recipes.recipe import Recipe
@@ -12,8 +12,8 @@ class XmlRecipeParser(RecipeParser):
         super().__init__(recipe_path)
 
     def parse(self, raw_data=False):
-        etree = xml.etree.ElementTree.parse(self.recipe_path)
-        data_dict = self._etree_to_dict(etree)
+        graph = ET.parse(self.recipe_path).getroot()
+        data_dict = self._etree_to_dict(graph)
         if raw_data:
             return data_dict
         return Recipe(data_dict)

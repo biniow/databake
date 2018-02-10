@@ -31,19 +31,19 @@ class TestGraph(TestCase):
         self.connection1.name = 'node1 to node2'
         self.connection1.from_pin = mock.MagicMock()
         node1_plugin = importlib.import_module(self.node1.plugin_name)
-        self.connection1.from_pin.name = node1_plugin.__output_pins__[0]
+        self.connection1.from_pin.pin = node1_plugin.__output_pins__[0]
         self.connection1.from_pin.node = 1
 
         self.connection1.to_pin = mock.MagicMock()
         node2_plugin = importlib.import_module(self.node2.plugin_name)
-        self.connection1.to_pin.name = node2_plugin.__input_pins__[0]
+        self.connection1.to_pin.pin = node2_plugin.__input_pins__[0]
         self.connection1.to_pin.node = 2
 
     def test_graph_setGraphNameFromRecipe_setCorrectly(self):
         # Arrange
         valid_value = 'test_name'
         recipe = mock.MagicMock()
-        recipe.name = valid_value
+        recipe.graph_name = valid_value
 
         # Act
         graph = Graph(recipe)
