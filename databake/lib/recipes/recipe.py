@@ -16,6 +16,17 @@ class Recipe:
         for connection in recipe_raw_data['connections']:
             self.connections.append(_ConnectionRecipeItem(**connection))
 
+        self.check_connections()
+
+    def check_connections(self):
+        unique_pins = []
+        for connection in self.connections:
+            if connection.to_pin not in unique_pins:
+                unique_pins.append(connection.to_pin)
+            else:
+                raise ParserError(f'Connection {connection} duplicates input '
+                                  f'of pin {connection.to_pin}. Check your connections')
+
 
 class _RecipeItem(dict):
     def __init__(self, required_data, *args, **kwargs):

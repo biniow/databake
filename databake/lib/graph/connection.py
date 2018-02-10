@@ -15,7 +15,7 @@ class Connection:
         self.from_pin.descendant_nodes.append(to_pin.node)
 
         if from_pin.node.level == 0:
-            from_pin.node.level += 1
+            from_pin.node.level = 1
 
         to_pin.node.increase_lvl(from_pin.node.level)
 

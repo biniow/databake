@@ -10,6 +10,8 @@ def main():
     for file_path in os.listdir(files_dir):
         print(f'=====> Testing {file_path} file:')
         graph = common.get_graph(os.path.join(files_dir, file_path))
+        for node in graph.nodes.values():
+            print(node.node_id, node.level)
 
 
 main()
