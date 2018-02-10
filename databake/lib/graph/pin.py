@@ -13,6 +13,7 @@ class Pin:
         self.node = None
         self.name = name
         self.type = pin_type
+        self.descendant_nodes = []
 
     def __str__(self):
         return f'Pin:{self.name}'

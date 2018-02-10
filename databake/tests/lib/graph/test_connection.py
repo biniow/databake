@@ -11,9 +11,9 @@ from databake.lib.graph.pin import INPUT_PIN, Pin, OUTPUT_PIN
 class TestConnection(TestCase):
     def setUp(self):
         self.node1 = Node(1, 'test', 'Node1', auto_import=False)
-        self.node1.level = 0
+        self.node1.level = 1
         self.node2 = Node(2, 'test', 'Node2', auto_import=False)
-        self.node2.level = 1
+        self.node2.level = 2
 
         self.pin1 = Pin('pin1', OUTPUT_PIN)
         self.pin1.node = self.node1
@@ -59,4 +59,4 @@ class TestConnection(TestCase):
         connection = Connection(self.pin1, pin)
 
         # Assert
-        self.assertEqual(node_zero.level, 1)
+        self.assertEqual(node_zero.level, 2)

@@ -19,7 +19,7 @@ class Graph:
     def init_nodes(self):
         for node in self.recipe.nodes:
             if self.nodes.get(node.id):
-                msg = 'Graph can not contain two or more nodes with the same id'
+                msg = f'Graph can not contain two or more nodes with the same id: {node.id}'
                 raise GraphError(msg)
             self.nodes[node.id] = Node(node.id, node.plugin_name, node.name, node.parameters)
 

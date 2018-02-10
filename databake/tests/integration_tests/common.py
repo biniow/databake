@@ -6,6 +6,10 @@ from databake.lib.recipes.recipe_parser import RecipeParser
 from databake.lib.recipes.xml_recipe_parser import XmlRecipeParser
 
 
+class NodeIntegrityError(Exception):
+    pass
+
+
 def get_graph(file_path):
     if file_path.endswith('.xml'):
         parser = XmlRecipeParser(file_path)

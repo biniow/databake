@@ -72,6 +72,14 @@ class Node:
             if not isinstance(self.parameters.get(param_name), valid_types):
                 raise NodeError(f'Invalid type of {param_name} parameter. Should be {param_type}')
 
+    def increase_lvl(self, base_lvl):
+        if self.level <= base_lvl:
+            self.level = base_lvl + 1
+
+        for pin in self.output_pins:
+            for descendant_node in pin.descendant_nodes:
+                descendant_node.increase_lvl(self.level)
+
     def _iterate_plugin_pins(self, pins, pin_type):
         for pin in pins:
             self._add_pin_wrapper(pin, pin_type)
